@@ -24,14 +24,57 @@ ui <- fluidPage(
               min = 2700, max = 6300, value = c(3000, 4000)),
   
   # body mass plot output ----
-  plotOutput(outputId = "bodyMass_scatterplot_output")
+  plotOutput(outputId = "bodyMass_scatterplot_output"),
+  
+  #Checkbox Input------
+  checkboxGroupInput(inputId = "year_input", label = "Select year(s)",
+                     choices = c("2007", "2008","2009"),
+                     selected = c("2007", "2008")),
+  
+  #Checkbox Output ------
+  DT::dataTableOutput(outputId = "year_dataTable_output")
+  
 )
 
 # server instructions ----
 server <- function(input, output) {
+ 
+   #filter body masses -------
+  body_mass_df <-reactive({
+    
+    penguins %>% 
+    filter(body_mass_g %in% c(input$body_mass_input[1]:input$body_mass_input[2]))
+  
+  })
+  
+  
+  #Create the scatterplot -------
   output$bodyMass_scatterplot_output <- renderPlot({
+    ggplot(na.omit(body_mass_df()), 
+           aes(x = flipper_length_mm, y = bill_length_mm, 
+               color = species, shape = species)) +
+      geom_point() +
+      scale_color_manual(values = c("Adelie" = "darkorange", "Chinstrap" = "purple", "Gentoo" = "cyan4")) +
+      scale_shape_manual(values = c("Adelie" = 19, "Chinstrap" = 17, "Gentoo" = 15)) +
+      labs(x = "Flipper length (mm)", y = "Bill length (mm)", 
+           color = "Penguin species", shape = "Penguin species") +
+      theme_minimal() +
+      theme(legend.position = c(0.85, 0.2),
+            legend.background = element_rect(color = "white")) 
+  })
+  
+ #Filter the years
+  years_df <-reactive({
+    
+    penguins %>% 
+      filter(year %in% c(input$year_input))
     
   })
+  
+   #render DT table ------
+  output$year_dataTable_output <- DT::renderDataTable({
+    DT::datatable(years_df())
+    })
 }
 
 # combine UI & server into an app ----
