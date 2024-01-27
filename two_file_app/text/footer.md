@@ -1,0 +1,1 @@
+*This app is maintained by [Heather Childers](https://hmchilders.github.io/)*
