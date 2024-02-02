@@ -7,14 +7,26 @@ library(shinyWidgets)
 library(shinycssloaders)
 library(markdown)
 library(rsconnect)
+library(shiny)
+library(bslib)
+  
+
 #load in the data ------
 library(palmerpenguins)
 library(lterdatasampler)
+#Thematic info----------
+thematic::thematic_shiny()
 
 # user interface ----
 ui <- fluidPage(
   # app title ----
   tags$h1("My App Title"),
+  
+  #Add a theme
+  theme = bs_theme(bg = "#A36F6F", # background color
+                   fg = "#FDF7F7", # foreground color
+                   primary = "#483132", # primary accent color
+                   base_font = font_google("Pacifico")),
   
   # app subtitle ----
   h4(strong("Exploring Antarctic Penguin Data")),

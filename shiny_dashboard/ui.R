@@ -19,6 +19,8 @@ sidebar <- dashboardSidebar(
 
 #Dashboard Body -----------------
 body <- dashboardBody(
+  # set theme
+  fresh::use_theme("shinydashboard-fresh-theme.css"),
   
   tabItems(
     
@@ -30,20 +32,33 @@ body <- dashboardBody(
                    #info box
                    box(
                      width = NULL,
-                     "BACKGROUND INFO HERE"
+                     title = tagList(icon("water"),
+                                     strong("Monitoring Fish Creek Watershed")),
+                     includeMarkdown("text/intro.md"),
+                     tags$img(src = "FishCreekWatershedSiteMap_2020.jpg" ,
+                            alt = "A map of Northern Alaska, showing Fish Creek Watershed located within the National Petroleum Reserve.",
+                              style = "max-width: 100%;"),
+                     tags$h6(tags$em("Map Source:", 
+                                     tags$a(href = "http://www.fishcreekwatershed.org/",
+                                            "FCWO")),
+                             style = "text-align: center")
                    )#END of Box
-                   ),#END Left Column
+            ),#END Left Column
             #Right - Top Column
             column(width = 6,
-              fluidRow(box(width = NULL,
-                       "CITATION HERE"
-                       )#END Box 1
-              ),#END fluidrow
-              fluidRow(
-                box(width = NULL, 
-                    "PLACEHOLDER TEXT"
-                    )#END of box2
-                )#END of fluidrow2
+                   fluidRow(box(width = NULL,
+                                title = tagList(icon("table"),
+                                                strong("Data Source")),
+                                includeMarkdown("text/citation.md")
+                   )#END Box 1
+                   ),#END fluidrow
+                   fluidRow(
+                     box(width = NULL, 
+                         title = tagList(icon("warning"),
+                                         strong("Data Source")),
+                         includeMarkdown("text/disclaimer.md")
+                     )#END of box2
+                   )#END of fluidrow2
             )#END Right column
             
     ),#END welcome tab Item
@@ -60,7 +75,7 @@ body <- dashboardBody(
                               min = min(lake_data$Elevation),
                               max = max(lake_data$Elevation),
                               value = c(min(lake_data$Elevation),max(lake_data$Elevation) )
-                              ),#END Elevation Slider
+                  ),#END Elevation Slider
                   sliderInput(inputId = "temp_slider_input",
                               label = "Temperature (ºC)",
                               min = min(lake_data$AvgTemp),
@@ -73,16 +88,16 @@ body <- dashboardBody(
                               max = max(lake_data$AvgDepth),
                               value = c(min(lake_data$AvgDepth),max(lake_data$AvgDepth) )
                   ) #END Temp Slider
-                  ),# End Box
+              ),# End Box
               box(width = 8,
-                title = "Montioring Lakes within Creek Watershed",
-                # leaflet output -------
-                leafletOutput(outputId = "lake_map_output") %>% 
-                  withSpinner(type = 5, color = "skyblue")
+                  title = "Montioring Lakes within Creek Watershed",
+                  # leaflet output -------
+                  leafletOutput(outputId = "lake_map_output") %>% 
+                    withSpinner(type = 5, color = "skyblue")
               )#END map Box
             )#END Fluid Row
             
-          
+            
     )#END dashboard tab Item
   )#END tabitems
 )#END Body
